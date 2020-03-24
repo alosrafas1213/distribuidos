@@ -1,15 +1,12 @@
-//#include <cstdio>
+#include <cstdio>
 #include <cstdlib>
+#include <stdlib.h>
 #include <unistd.h>
 #include <cstring>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <netdb.h> 
 #include <iostream>
-#include <fstream>
 #include <sstream>
-//#include <ctime>
 #include <iomanip>
 #include <sys/time.h>
 using namespace std;
