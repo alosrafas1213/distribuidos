@@ -3,17 +3,16 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <errno.h>
-#include <netdb.h>  			//para usar gethostbyname
-#include <stdio.h>
+#include <cerrno>
+#include <netdb.h>  			
+#include <cstdio>
 #include <sys/timeb.h>
-#include <time.h>
 #include <unistd.h>
-#include <string.h>
+#include <cstring>
 #include <sys/time.h>
-#include <signal.h>
+#include <csignal>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 
 #define TAMBUF 100
 
