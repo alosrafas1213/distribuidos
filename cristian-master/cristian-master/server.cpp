@@ -1,8 +1,6 @@
 /* Servidor de tiempos (modo concurrente).
  * Sincronización de relojes, siguiendo el algoritmo centralizado de Cristian. */
 
-#include <string.h>
-
 // Ficheros necesarios para el manejo de sockets, direcciones, etc.
 
 #include <sys/socket.h>
