@@ -15,8 +15,15 @@
 #define TAMBUF 100
 
 char nom_serv[80];				//nombre de la máquina servidora
-char *comandos[] = {"OPEN","SYNC","TERM"};	//comandos de comunicación con el servidor
-char *respuestas[] = {"OKEY","FINN"};		//respuestas del servidor
+char open1[] = "OPEN";
+char sync1[] = "SYNC";
+char term1[] = "TERM";		
+
+char okey1[] = "OKEY";
+char finn1[] = "FINN";	
+
+char *comandos[] = {open1,sync1,term1};	//comandos de comunicación con el servidor
+char *respuestas[] = {okey1,finn1};		//respuestas del servidor
 
 struct timeval Dmin;
 
