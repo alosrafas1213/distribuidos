@@ -1,8 +1,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <cerrno>
 #include <cstring>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 #include <netdb.h> 
 #include <iostream>
 #include <sstream>
