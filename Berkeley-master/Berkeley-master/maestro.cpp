@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
