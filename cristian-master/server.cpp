@@ -22,12 +22,12 @@
 
 // Comandos y respuestas definidos en el protocolo.
 
-char *comandos[] =
-{
-"OPEN",  // Solicitud de inicio de sesión.
-"SYNC",	// Iniciar proceso de sincronización.
-"TERM"	// Cierre de sesión.
-};
+
+char open1[] = "OPEN";
+char sync1[] = "SYNC";
+char term1[] = "TERM";		
+
+char *comandos[] = {open1,sync1,term1};	//comandos de comunicación con el servidor
 
 int compara_comandos(char *s1, char *s2);
 //Compara dos cadenas de exactamente 4 caracteres, identificando el comando.
