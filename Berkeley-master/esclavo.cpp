@@ -11,7 +11,11 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+#include <iomanip>
+#include <sys/time.h>
 using namespace std;
+
+struct timeval horaservidor;
 
 void error(const char *msg)
 {
@@ -45,7 +49,7 @@ int main(int argc, char *argv[])
 	struct hostent *server;
 
 	// El reloj logico que manejara nuestro cliente 
-	int relojLogico = 0;
+	double reloj = 0.0, reloj2=0.0;
 
 	// El servidor lee los caracteres de la conexión del socket en este búfer.
 	char buffer[256];
@@ -65,9 +69,15 @@ int main(int argc, char *argv[])
 	numPuerto = atoi(argv[1]);
 
     // Iniciando la función aleatoria con la hora actual como entrada
-	srand(time(0));						
+	//srand(time(0));						
     // Definiendo el rango de numeros random desde 5 al 30
-	relojLogico = (rand()%25) + 5;				
+	//reloj = (rand()%25) + 5;	
+	gettimeofday(&horaservidor,NULL);				
+	reloj = horaservidor.tv_sec;
+	reloj2 = horaservidor.tv_usec;
+	reloj2 = reloj2 /1000000;
+	reloj = reloj + reloj2;
+			
 
 	/* 	La llamada al sistema socket () crea un nuevo socket. Se necesitan tres argumentos.
 
@@ -135,7 +145,7 @@ int main(int argc, char *argv[])
 		error("ERROR conectando");
 
     //Imprimiendo el reloj logico de la maquina local 
-	cout << "Mi reloj logico: " << relojLogico << endl; 
+	printf("Mi reloj : %f\n\n",reloj); 
 
 	//Se inicializa el buffer de intercambio de 256 bits de tamaño en cero.
 	bzero(buffer,256);
@@ -145,20 +155,22 @@ int main(int argc, char *argv[])
 		error("ERROR leyendo de socket");
 
 	//Imprimiendo el reloj logico del servidor de tiempo
-    cout << "Tiempo del servidor (TD) iniciaondo el algoritmo de Berkeley!\n Este es el reloj lógico de TD: " << buffer << endl;
+    cout << "Tiempo del servidor (TD) iniciaondo el algoritmo de Berkeley!\n"  << endl;
+
+    printf("Este es el reloj de TD: %f\n\n",atof(buffer));
 	
 	// se crean dos string's para la manipulaccion de los buffers
 	stringstream ss, ss1; // Se declaran ss y ssl como stringstream para poder manipularlas por medio del buffer
 	
-	ss << buffer; // Se inserta el contenido del buffer en ss
+	ss << std::setprecision(20) << buffer; // Se inserta el contenido del buffer en ss
 	string tmpstr1 = ss.str(); // Se crea una string temporal para guardar lo almacenado en ss
 	
 	// Se convierte en relog de timepo del servidor de caracter a entero
-	int tmp = atoi(tmpstr1.c_str());	 // Se convierte lo almacenado en la string temporal a entero y se almacena en tmp 
+	double tmp = atof(tmpstr1.c_str());	 // Se convierte lo almacenado en la string temporal a entero y se almacena en tmp 
 	
-    // Cálculo de la diferencia de tiempo de la máquina local a partir del tiempo del server restando el valor de la variable relojLogico y la variable tmp
+    // Cálculo de la diferencia de tiempo de la máquina local a partir del tiempo del server restando el valor de la variable reloj y la variable tmp
     // Que contiene el rejoj del reloj logico del servidor
-	int diff = relojLogico - tmp; 		
+	double diff = reloj - tmp; 		
 	cout << "Diferencia de tiempo respecto al reloj logico: "<< diff << endl;
 	
 	// Se limpia el buffer de mensaje
@@ -166,7 +178,7 @@ int main(int argc, char *argv[])
 
 
 	//Se asigna el contenido de diff como string en ssl la variable strinstream previamente declarada
-	ss1 << diff;
+	ss1 << std::setprecision(20) << diff;
 	// se asigna a una variable temporal
 	string tmpstr2 = ss1.str();
 	// Se copia su contenido al buffer
@@ -180,13 +192,13 @@ int main(int argc, char *argv[])
 	bzero(buffer,256);
     // Lectura del valor promedio final a ajustar en el reloj lógico de la máquina local
 	numCart = read(sockfd,buffer,255);			
-	printf("Ajuste del reloj = %s\n",buffer);
+	printf("Ajuste del reloj = %f\n",atof(buffer));
 
-	int adj_clock = atoi(buffer);
+	double adj_clock = atof(buffer);
 	
-	relojLogico = relojLogico + adj_clock;
+	reloj = reloj + adj_clock;
 
-	cout << "Mi reloj ajustado: " << relojLogico << endl;
+	printf("Mi reloj ajustado: %f\n",reloj);
 
     //Cierre el socket del cliente y finalice la conexión.
 	close(sockfd);	

@@ -13,8 +13,12 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+#include <sys/time.h>
+#include <iomanip>
 
 using namespace std;
+
+struct timeval horaservidor;
 
 void error(const char *msg) 
 {
@@ -25,19 +29,20 @@ void error(const char *msg)
 char buffer[256];
 int n;
 
-int relojLogico = 0, total = 0, promedio = 0, cnt = 0, t=0;
+int total = 0, cnt = 0, t=0;
+double reloj = 0, reloj2 =0, promedio = 0; 
 
 void Berkeley(long newsockfd)
 {
 	bzero(buffer,256);
 
 	stringstream ss, ss1, ss2;
-	ss << relojLogico;
+	ss << std::setprecision(20) << reloj;                          //ss << std::setprecision(5) << num << endl;
 	// Se convierte el valor del reloj a String
 	string tmpstr1 = ss.str();			
 	// Ahora se convierte de String a const char *
 	strcpy(buffer,tmpstr1.c_str());				
-	
+
 	// Se envia el tiempo del reloj logico conectado a la computadora
 	n = write((long)newsockfd,buffer,strlen(buffer));	
 	if (n < 0) error("ERROR escribiendo al socket");
@@ -53,7 +58,7 @@ void Berkeley(long newsockfd)
 	
 	//converting Time Daemon's clock from char array to integer value
 	//Se convierte el valor del tiempo del reloj de char array a entero
-	int diff = atoi(tmpstr2.c_str());	
+	double diff = atof(tmpstr2.c_str());	
 
 	//Adding all time differences
 	//Se suman las diferencias entre los tiempos
@@ -65,7 +70,7 @@ void Berkeley(long newsockfd)
 	promedio = total/(cnt+1);			
 
 	//Se calcula el tiempo promedio de ajuste para cada reloj
-	int adj_clock = promedio - diff;		
+	double adj_clock = promedio - diff;		
 
 	bzero(buffer,256);
 	
@@ -113,9 +118,14 @@ int main(int argc, char *argv[])
 	pthread_t hilos[10];	
 
 	//Iniciando la función aleatoria con la hora actual como entrada
-	srand(time(0));						
+	//srand(time(0));						
 	// Definir el rango de números aleatorios del 5 al 30
-	relojLogico = (rand()%25) + 5;				
+	//reloj = (rand()%25) + 5;
+	gettimeofday(&horaservidor,NULL);				
+	reloj = horaservidor.tv_sec;
+	reloj2 = horaservidor.tv_usec;
+	reloj2 = reloj2 /1000000;
+	reloj = reloj + reloj2;
 
 	if (argc < 2) {
 		fprintf(stderr,"ERROR, no se ha asignado puerto\n");
@@ -153,7 +163,8 @@ int main(int argc, char *argv[])
 	cout << "Ingrese el número total de máquinas para conectar: ";
 	cin >> t;
 
-	cout << "Hora del reloj logico: " << relojLogico << endl;
+	//cout << "Hora del reloj: " << reloj << endl;
+	printf("Hora del reloj: %f\n", reloj);
 
 	int sock_index = 0;
 
@@ -179,9 +190,9 @@ int main(int argc, char *argv[])
 	}
 
 	cout << "Ajuste del reloj: " << promedio << endl;
-	relojLogico = relojLogico + promedio;
+	reloj = reloj + promedio;
 
-	cout << "My Adjusted clock: " << relojLogico << endl;
+	printf("Mi reloj ajustado: %f\n",reloj);
 
 	close(sockfd);
 	return 0; 
