@@ -2,11 +2,9 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <netinet/in.h>
 #include <cerrno>
 #include <netdb.h>  			
 #include <cstdio>
-#include <sys/timeb.h>
 #include <unistd.h>
 #include <cstring>
 #include <sys/time.h>
